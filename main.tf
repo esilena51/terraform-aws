@@ -14,10 +14,13 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-data "aws_subnet" "selected" {
-  filter {
-    name   = "tag:Name"
-    values = ["rede_anelise"]
+resource "aws_subnet" "main" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = var.cidr_block
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "duwe"
   }
 }
 
@@ -25,7 +28,8 @@ data "aws_subnet" "selected" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  subnet_id     = data.aws_subnet.selected.id
+  subnet_id     = aws_subnet.main.id
+  user_data     = file("script.sh")
 
   tags = {
     Name = var.name
