@@ -11,5 +11,9 @@ variable "vpc_id" {
 }
 
 variable "cidr_block" {
-  default = "172.31.96.0/20"
+  default = "10.0.0.0/20"
+}
+
+variable "cidr_block2" {
+  default = "10.0.16.0/20"
 }
