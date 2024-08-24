@@ -11,9 +11,7 @@ variable "vpc_id" {
 }
 
 variable "cidr_block" {
-  default = "10.0.0.0/20"
+  type    = list(any)
+  default = ["10.0.0.0/20", "10.0.16.0/20", "10.0.32.0/20", "10.0.48.0/20"]
 }
 
-variable "cidr_block2" {
-  default = "10.0.16.0/20"
-}

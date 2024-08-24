@@ -24,8 +24,9 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "main" {
+  count                   = 4
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.cidr_block
+  cidr_block              = var.cidr_block[count.index]
   map_public_ip_on_launch = true
   availability_zone       = "us-east-1a"
 
@@ -34,21 +35,12 @@ resource "aws_subnet" "main" {
   }
 }
 
-resource "aws_subnet" "main2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.cidr_block2
-  map_public_ip_on_launch = true
-  availability_zone       = "us-east-1b"
-
-  tags = {
-    Name = "duwe2"
-  }
-}
 
 resource "aws_instance" "web" {
+  count         = 4
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  subnet_id     = aws_subnet.main.id
+  subnet_id     = aws_subnet.main.*.id[count.index]
   user_data     = file("files/script.sh")
 
   tags = {
@@ -56,13 +48,4 @@ resource "aws_instance" "web" {
   }
 }
 
-resource "aws_instance" "web2" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  subnet_id     = aws_subnet.main2.id
-  user_data     = file("files/script.sh")
 
-  tags = {
-    Name = var.name
-  }
-}
